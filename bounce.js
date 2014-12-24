@@ -13,6 +13,7 @@
             vy: 1,
         }
         var coefX;
+        var count = 0;
         var coefY;
         var score = 0;
         var best = 0;
@@ -23,7 +24,7 @@
             rx: 250,
             angle: 0
         };
-var spritesheet;
+        var spritesheet;
         window.onload = function init() {
             mCanvas = document.querySelector("#myCanvas");
             cotx = mCanvas.getContext("2d");
@@ -39,7 +40,7 @@ var spritesheet;
                 var SPRITE_WIDTH = 64;
                 var SPRITE_HEIGHT = 64;
                 var NB_DIRECTIONS = 1;
-                var NB_FRAMES_PER_POSTURE = 48;
+                var NB_FRAMES_PER_POSTURE = 12;
                 initSpritesBall(spritesheet, SPRITE_WIDTH, SPRITE_HEIGHT,
                     NB_DIRECTIONS, NB_FRAMES_PER_POSTURE)
                 requestAnimationFrame(mainLoop);
@@ -48,6 +49,7 @@ var spritesheet;
             App.init();
             console.log("init");
         };
+
         function traiteKeyDown(evt) {
             console.log("keydown " + evt.keyCode);
             if (evt.keyCode == 40)
@@ -59,9 +61,11 @@ var spritesheet;
             else if (evt.keyCode == 38)
                 bulubulu.ty -= 5;
         }
+
         function traiteKeyUp(evt) {
             console.log("keyUp");
         }
+
         function traiteMouseDown(evt) {
             var rect = mCanvas.getBoundingClientRect();
             console.log("mousedown x: " + evt.clientX + "y : " + evt.clientY);
@@ -70,15 +74,18 @@ var spritesheet;
             ball.x = rect.top + evt.clientX;
             ball.y = rect.left + evt.clientY;
         }
+
         function traiteMouseUp(evt) {
             console.log("mouseup");
         }
+
         function traiteMouseMove(evt) {
             var rect = mCanvas.getBoundingClientRect();
             //console.log("mousemove");
             //bulubulu.tx = rect.top + evt.clientX;
             //bulubulu.ty = rect.left + evt.clientY;
         }
+
         function Animer() {
             //takeSnapshot();
             cotx.clearRect(0, 0, mCanvas.width, mCanvas.height);
@@ -138,6 +145,7 @@ var spritesheet;
             Pupille(0, -30, 3);
             cotx.restore();
         }
+
         function Chevelure(x, y) {
             Cheveux((170 - 250) + x, (172 - 250) + y, 10);
             Cheveux((175 - 250) + x, (165 - 250) + y, 10);
@@ -147,6 +155,7 @@ var spritesheet;
             Cheveux((203 - 250) + x, (146 - 250) + y, 10);
             Cheveux((210 - 250) + x, (143 - 250) + y, 10);
         }
+
         function DrawCircle(x, y, s) {
             cotx.save();
             cotx.arc(x, y, s, 2 * Math.PI, 0, true);
@@ -162,6 +171,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function DrawCircle(x, y, s, bColor) {
             cotx.save();
             cotx.arc(x, y, s, 2 * Math.PI, 0, true);
@@ -177,6 +187,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function Bouche(x, y, s) {
             cotx.save();
             cotx.arc(x, y, s, Math.PI, 0, true);
@@ -193,6 +204,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function Nez(x, y) {
             cotx.save();
             cotx.translate(x, y);
@@ -213,6 +225,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function Yeux(x, y, s) {
             cotx.save();
             cotx.arc(x + 37, y, s, 2 * Math.PI, 0, true);
@@ -239,6 +252,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function Pupille(x, y, s) {
             cotx.save();
             cotx.arc(x + 37, y, s, 2 * Math.PI, 0, true);
@@ -252,6 +266,7 @@ var spritesheet;
             cotx.beginPath();
             cotx.restore();
         }
+
         function Cheveux(x, y, s) {
             cotx.save();
             cotx.arc(x, y, s, 5 * Math.PI / 3, Math.PI / 2, false);
@@ -304,6 +319,7 @@ var spritesheet;
             },
             drawToCanvas: function () {
                 requestAnimationFrame(App.drawToCanvas);
+
                 var video = App.video,
                     ctx = App.context,
                     backCtx = App.backContext,
@@ -313,18 +329,24 @@ var spritesheet;
                     comp;
                 ctx.drawImage(video, 0, 0, App.canvas.width, App.canvas.height);
                 backCtx.drawImage(video, 0, 0, App.backCanvas.width, App.backCanvas.height);
-                comp = ccv.detect_objects(App.ccv = App.ccv || {
-                    canvas: App.backCanvas,
-                    cascade: cascade,
-                    interval: 2,
-                    min_neighbors: 1
-                });
-                if (comp.length) {
-                    console.log("coord x: " + comp[0].x + " y: " + comp[0].y);
-                    bulubulu.tx = mCanvas.width - (comp[0].x * coefX) - 10;
-                    bulubulu.ty = comp[0].y * coefY + 3 * (mCanvas.height / 4);
-                } else
-                    console.log("No face detected");
+                
+                //le nombre de traitements à ete reduit de moitié pour des raisons de performance
+                if (!(count % 2)) {
+                    comp = ccv.detect_objects(App.ccv = App.ccv || {
+                        canvas: App.backCanvas,
+                        cascade: cascade,
+                        interval: 2,
+                        min_neighbors: 1
+                    });
+
+                    if (comp.length) {
+                        console.log("coord x: " + comp[0].x + " y: " + comp[0].y);
+                        bulubulu.tx = mCanvas.width - (comp[0].x * coefX) - 10;
+                        bulubulu.ty = comp[0].y * coefY + 3 * (mCanvas.height / 4);
+                    } else
+                        console.log("No face detected");
+                }
+                count++;
                 //for (i = App.comp.length; i--; ) {
                 //	ctx.drawImage(App.glasses, (App.comp[i].x - w / 2) * m, (App.comp[i].y - w / 2) * m, (App.comp[i].width + w) * m, (App.comp[i].height + w) * m);
                 //}
@@ -378,12 +400,13 @@ var spritesheet;
             DrawCircle(ball.x - ball.r / 2, ball.y - ball.r / 2, ball.r, ball.colr);
             cotx.restore();
         }
+
         function Bounce() {
             ball.y += ball.vy;
             ball.x += ball.vx;
             ball.vy += 0.9;
             //headbounce
-            if (circlCirclOverlap(tx-50, ty, 90, ball.x, ball.y, ball.r+10)) {
+            if (circlCirclOverlap(tx - 50, ty, 90, ball.x, ball.y, ball.r + 10)) {
                 ball.y = ty - 60 - ball.r;
                 ball.vy *= -0.95;
                 ball.vx = (ball.x - tx) / 4;
@@ -417,14 +440,15 @@ var spritesheet;
         }
          //sprite
         var spriteBall;
-        
+
         function mainLoop(timestamp) {
             //cotx.clearRect(0, 0, mCanvas.width, mCanvas.height);
             //scale = 1 + 2 * (y / canvas.height);
-            spriteBall.renderMoving(ball.x-2*ball.r, ball.y-2*ball.r);
+            spriteBall.renderMoving(ball.x - 2 * ball.r, ball.y - 2 * ball.r);
             // recall mainLoop every 1/60th of second
             requestAnimationFrame(mainLoop);
         }
+
         function SpriteImage(img, x, y, width, height) {
             this.img = img;
             this.x = x;
@@ -434,9 +458,10 @@ var spritesheet;
             // xPos et yPos = position où dessiner le sprite,
             // scale = s'il faut rescaler.
             this.render = function (xPos, yPos) {
-                cotx.drawImage(this.img, this.x, this.y, this.width, this.height, xPos, yPos,this.width, this.height);
+                cotx.drawImage(this.img, this.x, this.y, this.width, this.height, xPos, yPos, this.width, this.height);
             };
         }
+
         function Sprite(spritesheet, x, y, width, height, nbImages, nbFramesOfAnimationBetweenRedraws) {
             this.spriteImages = [];
             this.currentFrame = 0;
@@ -486,6 +511,7 @@ var spritesheet;
                 this.spriteImages[0].render(x, y, scale);
             };
         }
+
         function initSpritesBall(img, spriteWidth, spriteHeight, nbLinesOfSprites,
             nbSpritesPerLine) {
             // on parcour l'image et pour chaque ligne (correspondant à une direction)
