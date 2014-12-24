@@ -356,8 +356,8 @@ var spritesheet;
                         App.backCanvas.height = App.video.videoHeight / 2;
                         App.backContext = App.backCanvas.getContext('2d');
 
-                        App.context.translate(mCanvas.width * 1.5, 0);
-                        App.context.scale(-0.5, 0.5);
+                        //App.context.translate(mCanvas.width * 1.5, 0);
+                        //App.context.scale(-0.5, 0.5);
 
                         coefX = mCanvas.width / App.backCanvas.width;
 
@@ -554,7 +554,7 @@ var spritesheet;
             // xPos et yPos = position où dessiner le sprite,
             // scale = s'il faut rescaler.
             this.render = function (xPos, yPos) {
-                cotx.drawImage(this.img, this.x, this.y, this.width, this.height, xPos, yPos);
+                cotx.drawImage(this.img, this.x, this.y, this.width, this.height, xPos, yPos,this.width, this.height);
             };
         }
 
