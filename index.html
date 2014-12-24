@@ -487,7 +487,7 @@ var spritesheet;
         function Bounce() {
             ball.y += ball.vy;
             ball.x += ball.vx;
-            ball.vy += 0.7;
+            ball.vy += 0.9;
 
             //headbounce
             if (circlCirclOverlap(tx, ty, 60, ball.x, ball.y, ball.r)) {
@@ -523,7 +523,7 @@ var spritesheet;
             //Left wall bounce
             if (ball.x - ball.r < 0) {
 
-                ball.x = 0 - ball.r;
+                ball.x = 0 + ball.r;
                 ball.vx *= -1;
 
             }
