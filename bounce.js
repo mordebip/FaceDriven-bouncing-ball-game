@@ -39,7 +39,7 @@ var spritesheet;
                 var SPRITE_WIDTH = 64;
                 var SPRITE_HEIGHT = 64;
                 var NB_DIRECTIONS = 1;
-                var NB_FRAMES_PER_POSTURE = 12;
+                var NB_FRAMES_PER_POSTURE = 48;
                 initSpritesBall(spritesheet, SPRITE_WIDTH, SPRITE_HEIGHT,
                     NB_DIRECTIONS, NB_FRAMES_PER_POSTURE)
                 requestAnimationFrame(mainLoop);
