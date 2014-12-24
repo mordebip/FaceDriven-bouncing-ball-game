@@ -483,9 +483,8 @@ function Bounce() {
 		ballY = mCanvas.height - ballR;
 		ballVy *= -0.98;
         ballVx *= 0.9;
+        best = score > best ? score : best;
         score = 0;
-        if (score > best)
-            best = score;
         
 	}
     //Top bounce
@@ -511,108 +510,7 @@ function Bounce() {
 	}
 }
 
-//sprit load
-//not implemented yet
-    
-function SpritStart(){	  
-  
-    // load the spritesheet
-    spritesheet = new Image();
-    spritesheet.src="pokeballs_sprite.png";
-    spritesheet.onload = function() {
-      
 
-    initSpritesWoman(spritesheet, SPRITE_WIDTH, SPRITE_HEIGHT, 
-    			NB_DIRECTIONS, NB_FRAMES_PER_POSTURE);
-
-	var SPRITE_WIDTH = 275;
-	var SPRITE_HEIGHT = 275;
-	var NB_DIRECTIONS = 1;
-	var NB_FRAMES_PER_POSTURE = 16;
-
-    initSpritesRobot(spritesheet, SPRITE_WIDTH, SPRITE_HEIGHT, 
-    				 NB_DIRECTIONS, NB_FRAMES_PER_POSTURE)
-      
-      requestAnimationFrame(mainLoop);
-    };
-    
-};
-    
-function SpriteImage(img, x, y, width, height) {
-	this.img = img;
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
-  
-    // xPos et yPos = position où dessiner le sprite,
-    // scale = s'il faut rescaler.
-    this.render = function(xPos, yPos, scale) {
-          ctx.drawImage(this.img, 
-		  this.x, this.y, 
-		  this.width, this.height, 
-		  xPos, yPos, 
-		  this.width*scale, this.height*scale);
-    };
-}
-
-function Sprite(spritesheet, x, y, width, height, nbImages, nbFramesOfAnimationBetweenRedraws) {
-	this.spriteImages = [];
-    this.currentFrame = 0;
-    this.nbFrames = nbImages;
-    this.nbTicksBetweenRedraws = nbFramesOfAnimationBetweenRedraws;
-    this.nbCurrentTicks=0;
-
-    // on parcour la ligne de l'image où se trouve les imagettes
-    // d'animation
-    var currentColonne = 0;
-	for(var i = 0; i < nbImages; i++) {
-		console.log(i);
-		// we extract the subimage
-		var xStartOfImgInSpriteSheet = x+currentColonne*width;
-		if((xStartOfImgInSpriteSheet+width) > spritesheet.width) {
-			// we reached end of line of the sprite sheet, let's go
-			// to the next line
-			y += height;
-			currentColonne = 0;
-			i--;
-			console.log("passage à la ligne");
-		} else {
-			currentColonne++;
-		    console.log("j'extrait img en (" + xStartOfImgInSpriteSheet + ", " +y + ")");
-		    this.spriteImages[i] = new SpriteImage(spritesheet, 
-			                             xStartOfImgInSpriteSheet, y, 
-			                             width, height);
-
-		}
-
-	}
-
-	this.renderMoving = function(x, y, scale) {
-		// renders animated sprite, changed every nbTicksBetweenRedraws
-		// the frame number
-		
-		// draw the sprite with the current image
-		this.spriteImages[this.currentFrame].render(x, y, scale);
-
-		// increment the number of ticks of animation 
-		this.nbCurrentTicks++;
-
-		if(this.nbCurrentTicks > this.nbTicksBetweenRedraws) {
-			// enough time elapsed, let's go to the next image
-			this.currentFrame++;
-			if(this.currentFrame == this.nbFrames) {
-				this.currentFrame=0;
-			}
-			this.nbCurrentTicks = 0;
-		}
-	};
-	this.render = function(x, y, scale) {
-		// draws always frame 0, static position
-		this.spriteImages[0].render(x, y, scale);
-	};
-}
-    
     
 </script>
 </body>
