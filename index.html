@@ -29,7 +29,8 @@ var mCanvas, cotx;
 var sx=1,sy=1,tx=250,ty=250,angle=0;
 var coefX ;
 var coefY ;
-
+var score = 0;
+var best  = 0;
     
 var bulubulu = {
   sx:0.5,
@@ -461,8 +462,6 @@ var	ballVx= 0, ballVy= 1;
         DrawCircle(ballX-ballR/2,ballY-ballR/2,ballR,colr);
         cotx.restore();
     }
-var score = 0;
-var best  = 0;
 
 function Bounce() {
 	ballY += ballVy;
@@ -485,7 +484,9 @@ function Bounce() {
 		ballVy *= -0.98;
         ballVx *= 0.9;
         score = 0;
-        best = score > best ? score : best;
+        if (score > best)
+            best = score;
+        
 	}
     //Top bounce
 	if(ballY + ballR < 0 ) {
